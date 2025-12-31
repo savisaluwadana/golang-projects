@@ -16,17 +16,17 @@ var db *sql.DB
 
 // Student represents a student record
 type Student struct {
-	ID          int       `json:"id"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	Email       string    `json:"email"`
-	Phone       string    `json:"phone"`
-	DateOfBirth string    `json:"date_of_birth"`
-	Address     string    `json:"address"`
-	EnrollmentDate string `json:"enrollment_date"`
-	Status      string    `json:"status"` // active, inactive, graduated
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID             int       `json:"id"`
+	FirstName      string    `json:"first_name"`
+	LastName       string    `json:"last_name"`
+	Email          string    `json:"email"`
+	Phone          string    `json:"phone"`
+	DateOfBirth    string    `json:"date_of_birth"`
+	Address        string    `json:"address"`
+	EnrollmentDate string    `json:"enrollment_date"`
+	Status         string    `json:"status"` // active, inactive, graduated
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 // Course represents a course

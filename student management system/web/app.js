@@ -209,7 +209,9 @@ function editStudent(studentId) {
     openStudentModal(studentId);
 }
 
-async function saveStudent() {
+async function saveStudent(e) {
+    if (e) e.preventDefault();
+    
     const studentId = document.getElementById('student-id').value;
     const studentData = {
         first_name: document.getElementById('student-first-name').value.trim(),
@@ -227,23 +229,28 @@ async function saveStudent() {
         return;
     }
     
-    if (studentId) {
-        studentData.id = parseInt(studentId);
-        await apiCall('/students', {
-            method: 'PUT',
-            body: JSON.stringify(studentData)
-        });
-        showToast('Student updated successfully');
-    } else {
-        await apiCall('/students', {
-            method: 'POST',
-            body: JSON.stringify(studentData)
-        });
-        showToast('Student added successfully');
-    }
+    try {
     
-    closeModal('student-modal');
-    await renderStudents();
+        if (studentId) {
+            studentData.id = parseInt(studentId);
+            await apiCall('/students', {
+                method: 'PUT',
+                body: JSON.stringify(studentData)
+            });
+            showToast('Student updated successfully');
+        } else {
+            await apiCall('/students', {
+                method: 'POST',
+                body: JSON.stringify(studentData)
+            });
+            showToast('Student added successfully');
+        }
+        
+        closeModal('student-modal');
+        await renderStudents();
+    } catch (error) {
+        console.error('Error saving student:', error);
+    }
 }
 
 async function deleteStudent(studentId) {
@@ -320,7 +327,9 @@ function editCourse(courseId) {
     openCourseModal(courseId);
 }
 
-async function saveCourse() {
+async function saveCourse(e) {
+    if (e) e.preventDefault();
+    
     const courseId = document.getElementById('course-id').value;
     const courseData = {
         code: document.getElementById('course-code').value.trim(),
@@ -335,23 +344,28 @@ async function saveCourse() {
         return;
     }
     
-    if (courseId) {
-        courseData.id = parseInt(courseId);
-        await apiCall('/courses', {
-            method: 'PUT',
-            body: JSON.stringify(courseData)
-        });
-        showToast('Course updated successfully');
-    } else {
-        await apiCall('/courses', {
-            method: 'POST',
-            body: JSON.stringify(courseData)
-        });
-        showToast('Course added successfully');
-    }
+    try {
     
-    closeModal('course-modal');
-    await renderCourses();
+        if (courseId) {
+            courseData.id = parseInt(courseId);
+            await apiCall('/courses', {
+                method: 'PUT',
+                body: JSON.stringify(courseData)
+            });
+            showToast('Course updated successfully');
+        } else {
+            await apiCall('/courses', {
+                method: 'POST',
+                body: JSON.stringify(courseData)
+            });
+            showToast('Course added successfully');
+        }
+        
+        closeModal('course-modal');
+        await renderCourses();
+    } catch (error) {
+        console.error('Error saving course:', error);
+    }
 }
 
 async function deleteCourse(courseId) {
@@ -473,7 +487,9 @@ function editEnrollment(enrollmentId) {
     openEnrollmentModal(enrollmentId);
 }
 
-async function saveEnrollment() {
+async function saveEnrollment(e) {
+    if (e) e.preventDefault();
+    
     const enrollmentId = document.getElementById('enrollment-id').value;
     const enrollmentData = {
         student_id: parseInt(document.getElementById('enrollment-student').value),
@@ -488,23 +504,28 @@ async function saveEnrollment() {
         return;
     }
     
-    if (enrollmentId) {
-        enrollmentData.id = parseInt(enrollmentId);
-        await apiCall('/enrollments', {
-            method: 'PUT',
-            body: JSON.stringify(enrollmentData)
-        });
-        showToast('Enrollment updated successfully');
-    } else {
-        await apiCall('/enrollments', {
-            method: 'POST',
-            body: JSON.stringify(enrollmentData)
-        });
-        showToast('Enrollment created successfully');
-    }
+    try {
     
-    closeModal('enrollment-modal');
-    await renderEnrollments();
+        if (enrollmentId) {
+            enrollmentData.id = parseInt(enrollmentId);
+            await apiCall('/enrollments', {
+                method: 'PUT',
+                body: JSON.stringify(enrollmentData)
+            });
+            showToast('Enrollment updated successfully');
+        } else {
+            await apiCall('/enrollments', {
+                method: 'POST',
+                body: JSON.stringify(enrollmentData)
+            });
+            showToast('Enrollment created successfully');
+        }
+        
+        closeModal('enrollment-modal');
+        await renderEnrollments();
+    } catch (error) {
+        console.error('Error saving enrollment:', error);
+    }
 }
 
 // Modal Functions
@@ -524,16 +545,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     // Student modal
-    document.getElementById('btn-add-student')?.addEventListener('click', () => openStudentModal());
-    document.getElementById('btn-save-student')?.addEventListener('click', saveStudent);
+    document.getElementById('btn-add-student')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openStudentModal();
+    });
+    document.getElementById('btn-save-student')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveStudent(e);
+    });
     
     // Course modal
-    document.getElementById('btn-add-course')?.addEventListener('click', () => openCourseModal());
-    document.getElementById('btn-save-course')?.addEventListener('click', saveCourse);
+    document.getElementById('btn-add-course')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openCourseModal();
+    });
+    document.getElementById('btn-save-course')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveCourse(e);
+    });
     
     // Enrollment modal
-    document.getElementById('btn-add-enrollment')?.addEventListener('click', () => openEnrollmentModal());
-    document.getElementById('btn-save-enrollment')?.addEventListener('click', saveEnrollment);
+    document.getElementById('btn-add-enrollment')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openEnrollmentModal();
+    });
+    document.getElementById('btn-save-enrollment')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveEnrollment(e);
+    });
     
     // Close modals
     document.querySelectorAll('.close-btn').forEach(btn => {
