@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Manager Pro - Lite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>📊 PM Pro</h1>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-view="dashboard">
+                <span class="icon">📈</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-view="projects">
+                <span class="icon">📁</span>
+                <span>Projects</span>
+            </a>
+            <a href="#" class="nav-item" data-view="kanban">
+                <span class="icon">📋</span>
+                <span>Kanban Board</span>
+            </a>
+            <a href="#" class="nav-item" data-view="tasks">
+                <span class="icon">✓</span>
+                <span>All Tasks</span>
+            </a>
+            <a href="#" class="nav-item" data-view="time">
+                <span class="icon">⏱️</span>
+                <span>Time Tracking</span>
+            </a>
+            <a href="#" class="nav-item" data-view="reports">
+                <span class="icon">📊</span>
+                <span>Reports</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="active-timer" id="active-timer-widget" style="display: none;">
+                <div class="timer-info">
+                    <span class="timer-icon">⏱️</span>
+                    <div>
+                        <div class="timer-task" id="active-timer-task">Task name</div>
+                        <div class="timer-duration" id="active-timer-duration">00:00:00</div>
+                    </div>
+                </div>
+                <button class="btn-stop-timer" id="btn-stop-timer">Stop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <button class="btn-toggle-sidebar" id="btn-toggle-sidebar">☰</button>
+            <div class="topbar-title">Dashboard</div>
+            <div class="topbar-actions">
+                <button class="btn btn-sm btn-secondary" id="btn-refresh">
+                    <span class="icon">🔄</span> Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-tasks">0</div>
+                            <div class="stat-label">Total Tasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-completed">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📁</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-projects">0</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-hours">0</div>
+                            <div class="stat-label">Tracked Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <div class="section">
+                        <h3>Recent Projects</h3>
+                        <div id="recent-projects"></div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Active Tasks</h3>
+                        <div id="active-tasks"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects View -->
+            <div id="projects-view" class="view">
+                <div class="view-header">
+                    <h2>Projects</h2>
+                    <button class="btn btn-primary" id="btn-create-project">
+                        <span class="icon">+</span> New Project
+                    </button>
+                </div>
+                <div id="projects-list" class="projects-grid"></div>
+            </div>
+
+            <!-- Kanban View -->
+            <div id="kanban-view" class="view">
+                <div class="view-header">
+                    <h2>Kanban Board</h2>
+                    <div class="kanban-controls">
+                        <select id="kanban-project-filter">
+                            <option value="">All Projects</option>
+                        </select>
+                        <button class="btn btn-primary" id="btn-create-task">
+                            <span class="icon">+</span> New Task
+                        </button>
+                    </div>
+                </div>
+                <div id="kanbanBoard" class="kanban-board">
+                    <div class="kanban-column" data-status="backlog">
+                        <div class="column-header">
+                            <h3>📥 Backlog</h3>
+                            <span class="count" id="countBacklog">0</span>
+                        </div>
+                        <div class="column-content" id="backlog-column"></div>
+                    </div>
+                    <div class="kanban-column" data-status="todo">
+                        <div class="column-header">
+                            <h3>📝 To Do</h3>
+                            <span class="count" id="countTodo">0</span>
+                        </div>
+                        <div class="column-content" id="todo-column"></div>
+                    </div>
+                    <div class="kanban-column" data-status="in_progress">
+                        <div class="column-header">
+                            <h3>🔄 In Progress</h3>
+                            <span class="count" id="countInProgress">0</span>
+                        </div>
+                        <div class="column-content" id="in_progress-column"></div>
+                    </div>
+                    <div class="kanban-column" data-status="in_review">
+                        <div class="column-header">
+                            <h3>👁️ Review</h3>
+                            <span class="count" id="countInReview">0</span>
+                        </div>
+                        <div class="column-content" id="in_review-column"></div>
+                    </div>
+                    <div class="kanban-column" data-status="done">
+                        <div class="column-header">
+                            <h3>✅ Done</h3>
+                            <span class="count" id="countDone">0</span>
+                        </div>
+                        <div class="column-content" id="done-column"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks View -->
+            <div id="tasks-view" class="view">
+                <div class="view-header">
+                    <h2>All Tasks</h2>
+                    <button class="btn btn-primary btn-create-task-alt">
+                        <span class="icon">➕</span> New Task
+                    </button>
+                </div>
+                <div class="filters">
+                    <select id="filter-project">
+                        <option value="">All Projects</option>
+                    </select>
+                    <select id="filter-status">
+                        <option value="">All Statuses</option>
+                        <option value="backlog">Backlog</option>
+                        <option value="todo">To Do</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="in_review">In Review</option>
+                        <option value="done">Done</option>
+                    </select>
+                    <select id="filter-priority">
+                        <option value="">All Priorities</option>
+                        <option value="0">Low</option>
+                        <option value="1">Medium</option>
+                        <option value="2">High</option>
+                        <option value="3">Urgent</option>
+                    </select>
+                    <input type="text" id="search-tasks" placeholder="Search tasks...">
+                </div>
+                <div id="tasks-list" class="tasks-list"></div>
+            </div>
+
+            <!-- Time Tracking View -->
+            <div id="time-view" class="view">
+                <div class="view-header">
+                    <h2>Time Tracking</h2>
+                </div>
+                <div class="time-tracking-container">
+                    <div class="time-tracker-widget">
+                        <h3>Start Timer</h3>
+                        <select id="time-task-select" class="form-control">
+                            <option value="">Select a task...</option>
+                        </select>
+                        <div id="selected-task-desc" style="display: none; margin: 12px 0; padding: 10px; background: var(--bg-secondary); border-radius: 6px; font-size: 0.9rem; color: var(--text-secondary);"></div>
+                        <textarea id="time-notes" placeholder="What are you working on?" rows="2"></textarea>
+                        <button class="btn btn-success btn-lg" id="btn-start-timer">
+                            <span class="icon">▶️</span> Start Timer
+                        </button>
+                    </div>
+                    
+                    <div class="time-entries-section">
+                        <h3>Time Entries</h3>
+                        <div id="time-entries-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reports-view" class="view">
+                <div class="view-header">
+                    <h2>Reports & Analytics</h2>
+                    <button class="btn btn-secondary" id="btn-refresh-reports">
+                        <span class="icon">🔄</span> Refresh
+                    </button>
+                </div>
+                <div class="reports-content">
+                    <div class="report-section">
+                        <h3>Project Completion</h3>
+                        <div id="project-completion-report"></div>
+                    </div>
+                    <div class="report-section">
+                        <h3>Time by Project</h3>
+                        <div id="time-by-project-report" class="report-grid"></div>
+                    </div>
+                    <div class="report-section">
+                        <h3>Time by User</h3>
+                        <div id="time-by-user-report" class="report-grid"></div>
+                    </div>
+                    <div class="report-section">
+                        <h3>Task Distribution</h3>
+                        <div id="task-distribution-report"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="project-modal-title">Create New Project</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="project-form">
+                    <input type="hidden" id="project-id">
+                    <div class="form-group">
+                        <label for="project-name">Project Name *</label>
+                        <input type="text" id="project-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-color">Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="project-color" value="#000000">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-project">Create Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Task Modal (Read-only) -->
+    <div id="view-task-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="view-task-title">Task Details</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="task-details">
+                    <div class="detail-row">
+                        <label>Description:</label>
+                        <div id="view-task-description" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Project:</label>
+                        <div id="view-task-project" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Status:</label>
+                        <div id="view-task-status" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Priority:</label>
+                        <div id="view-task-priority" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Assignee:</label>
+                        <div id="view-task-assignee" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Due Date:</label>
+                        <div id="view-task-due-date" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Estimated Hours:</label>
+                        <div id="view-task-hours" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Category:</label>
+                        <div id="view-task-category" class="detail-value"></div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Tags:</label>
+                        <div id="view-task-tags" class="detail-value"></div>
+                    </div>
+                    
+                    <!-- Comments Section -->
+                    <div style="margin-top: 24px;">
+                        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 16px;">Comments</h3>
+                        <div id="view-comments-list" style="margin-bottom: 16px; max-height: 300px; overflow-y: auto;"></div>
+                        <div class="form-group">
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="view-comment-author" placeholder="Your name" style="flex: 0 0 150px;">
+                                <input type="text" id="view-comment-text" placeholder="Add a comment..." style="flex: 1;">
+                                <button type="button" class="btn btn-sm btn-primary" id="btn-add-view-comment">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('view-task-modal')">Close</button>
+                    <button type="button" class="btn btn-primary" id="btn-edit-from-view">Edit Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="task-modal-title">Create New Task</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    <input type="hidden" id="task-id">
+                    <div class="form-group">
+                        <label for="task-description">Description *</label>
+                        <textarea id="task-description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-project">Project</label>
+                            <select id="task-project">
+                                <option value="">Select project...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-status">Status</label>
+                            <select id="task-status">
+                                <option value="backlog">Backlog</option>
+                                <option value="todo" selected>To Do</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="in_review">In Review</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-priority">Priority</label>
+                            <select id="task-priority">
+                                <option value="0">Low</option>
+                                <option value="1" selected>Medium</option>
+                                <option value="2">High</option>
+                                <option value="3">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-due-date">Due Date</label>
+                            <input type="date" id="task-due-date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="task-assignee">Assignee</label>
+                            <input type="text" id="task-assignee" placeholder="Enter name">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-estimated-hours">Estimated Hours</label>
+                            <input type="number" id="task-estimated-hours" min="0" step="0.5" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-category">Category</label>
+                        <input type="text" id="task-category" placeholder="e.g., Development, Design">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-tags">Tags (comma separated)</label>
+                        <input type="text" id="task-tags" placeholder="e.g., bug, feature, urgent">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-task">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
