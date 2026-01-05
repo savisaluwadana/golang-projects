@@ -5,16 +5,20 @@ import (
 	"time"
 )
 
-func barissta() {
-	fmt.Println("Barista Starting to make coffee")
+func makeDrink(barista string) {
+	fmt.Printf("Barista %s Starting to make coffee\n", barista)
 	time.Sleep(2 * time.Second)
-	fmt.Println("Barista finished making coffee")
+	fmt.Printf("Barista %s finished making coffee\n", barista)
 }
 func main() {
 	//
 	fmt.Println("Coffee shop opens!")
-	go barissta() //this makes the function concurrent
-	time.Sleep(3 * time.Second)
+	go makeDrink("Alice") //this makes the function concurrent
+	go makeDrink("Bob")
+	go makeDrink("Charlie")
+
+	time.Sleep(4 * time.Second)
+	fmt.Println("All drinks are probably ready!")
 	fmt.Println("Coffee shop closes!")
 
 }
